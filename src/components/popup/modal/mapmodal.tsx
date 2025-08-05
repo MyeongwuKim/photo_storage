@@ -1,25 +1,24 @@
-import { removeModal } from "@/hooks/useEvent";
 import { CheckIcon } from "@heroicons/react/24/solid";
 import { Dispatch, ReactNode, SetStateAction, useState } from "react";
-import SearchLocationInput from "../google/locationInput";
-import NormalBtn from "../ui/normalBtn";
-import GMap from "../google/gMap";
+import SearchLocationInput from "../../google/locationInput";
+import NormalBtn from "../../ui/normalBtn";
+import GMap from "../../google/gMap";
 
 type MapDateType = {
   placeAddress: string;
   location: google.maps.LatLngLiteral;
 };
 interface MapModalProps {
-  callback?: (data: MapDateType) => void;
+  onClose: (result?: any) => void;
 }
 
-const MapModal = ({ callback }: MapModalProps) => {
+const MapModal = ({ onClose }: MapModalProps) => {
   const [selectedLocation, setSelectedLocation] =
     useState<google.maps.LatLngLiteral>({ lat: 0, lng: 0 });
   const [placeAddress, setPlaceAddress] = useState<string>("");
 
   const removeEvt = () => {
-    removeModal();
+    onClose();
   };
   return (
     <div
@@ -42,9 +41,7 @@ const MapModal = ({ callback }: MapModalProps) => {
               entity={<CheckIcon className="w-5 h-5" />}
               clickEvt={() => {
                 if (!placeAddress) return;
-                if (callback)
-                  callback({ location: selectedLocation, placeAddress });
-                removeEvt();
+                onClose({ location: selectedLocation, placeAddress });
               }}
             />
           </div>

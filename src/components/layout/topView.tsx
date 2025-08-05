@@ -3,8 +3,7 @@ import { useTheme } from "next-themes";
 import Dropdown from "../ui/dropdown";
 import { MoonIcon, SunIcon, ArrowUpTrayIcon } from "@heroicons/react/20/solid";
 import NormalBtn from "../ui/normalBtn";
-import { createModal, createToast } from "@/hooks/useEvent";
-import UploadModal from "../modal/uploadModal";
+
 import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
@@ -16,11 +15,13 @@ import {
 } from "@heroicons/react/24/solid";
 import { signOut, useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
+import { useUI } from "../uiProvider";
 
 const hideFilter = ["viewer", "auth"];
 
 const TopView = () => {
   const session = useSession();
+  const { openModal } = useUI();
   const { setTheme, theme } = useTheme();
   const pathname = usePathname();
   const router = useRouter();
@@ -178,7 +179,7 @@ const TopView = () => {
         <div className="h-default w-[60px] md:flex sm:hidden ti:hidden">
           <NormalBtn
             clickEvt={() => {
-              createModal(<UploadModal />);
+              openModal("UPLOAD");
             }}
             entity={<ArrowUpTrayIcon className="w-5 h-5" />}
           />

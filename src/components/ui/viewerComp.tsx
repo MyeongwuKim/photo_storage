@@ -23,7 +23,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, usePathname, useRouter, notFound } from "next/navigation";
 import { ArrowsPointingInIcon } from "@heroicons/react/20/solid";
 import { createModal, createToast } from "@/hooks/useEvent";
-import AlertModal from "../modal/alertModal";
+import AlertModal from "../popup/modal/alertModal";
 
 interface ResponseProps {
   ok: boolean;

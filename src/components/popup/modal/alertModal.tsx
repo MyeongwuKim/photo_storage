@@ -1,17 +1,11 @@
-import { removeModal } from "@/hooks/useEvent";
-import { XMarkIcon } from "@heroicons/react/24/solid";
-import { ReactNode } from "react";
-
 interface AlertModalProps {
-  msg: ReactNode;
+  title?: string;
+  msg: string;
   btnMsg: string[];
-  callback?: () => void;
+  onClose: (result?: any) => void;
 }
 
-const AlertModal = ({ btnMsg, msg, callback }: AlertModalProps) => {
-  const removeEvt = () => {
-    removeModal();
-  };
+const AlertModal = ({ btnMsg, msg, onClose, title }: AlertModalProps) => {
   return (
     <div
       id="alertModal"
@@ -21,22 +15,18 @@ const AlertModal = ({ btnMsg, msg, callback }: AlertModalProps) => {
       <div className="z-[1] relative p-4 w-full max-w-md max-h-full justify-center items-center bottom-32">
         <div className="relative bg-white rounded-lg shadow-md dark:bg-gray-700">
           <div className="p-4 md:p-5 text-center flex gap-4 flex-col">
-            {msg}
+            {title && <h3 className="text-xl  font-bold">{title}</h3>}
+            <div className="text-base">{msg}</div>
             <div>
               <button
-                onClick={() => {
-                  if (callback) callback();
-                  removeEvt();
-                }}
+                onClick={() => onClose(1)}
                 type="button"
                 className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
               >
                 {btnMsg[0]}
               </button>
               <button
-                onClick={() => {
-                  removeEvt();
-                }}
+                onClick={() => onClose(0)}
                 data-modal-hide="popup-modal"
                 type="button"
                 className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
@@ -48,7 +38,6 @@ const AlertModal = ({ btnMsg, msg, callback }: AlertModalProps) => {
         </div>
       </div>
       <div
-        onClick={removeEvt}
         id="alertPannel"
         className="absolute top-0 w-full h-full bg-[rgba(0,0,0,0.5)] "
       />

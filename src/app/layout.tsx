@@ -10,14 +10,14 @@ import {
   Squares2X2Icon,
   StarIcon,
 } from "@heroicons/react/20/solid";
-import ToastPotal from "@/components/portal/toastPortal";
-import ModalPortal from "@/components/portal/modalPortal";
 import AuthProvider from "@/components/authProvider";
 import Spinner from "@/components/loading/spinner";
 import { QueryProvider } from "@/components/queryProvider";
 import Script from "next/script";
 import { Inter } from "next/font/google";
 import ErrorBoundryWrapper from "@/components/errorBoundryWrapper";
+import { UIProvider } from "@/components/uiProvider";
+import ReduxProvider from "@/components/reduxProvider";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -131,22 +131,20 @@ export default function RootLayout({
       <body className="duration-300">
         <AuthProvider>
           <QueryProvider>
-            <div className="flex flex-col">
-              <div id="TopView">
-                <TopView />
-              </div>
-              <div id="PageView">
-                <TabView tabViewItems={tabViewItemData} />
-                <ErrorBoundryWrapper>{children}</ErrorBoundryWrapper>
-              </div>
-            </div>
-            <div id="modal" className="fixed z-[98] top-0">
-              <ModalPortal />
-            </div>
-            <div id="toast" className="fixed z-[98] top-0">
-              <ToastPotal />
-            </div>
-            <Spinner />
+            <ReduxProvider>
+              <UIProvider>
+                <div className="flex flex-col">
+                  <div id="TopView">
+                    <TopView />
+                  </div>
+                  <div id="PageView">
+                    <TabView tabViewItems={tabViewItemData} />
+                    <ErrorBoundryWrapper>{children}</ErrorBoundryWrapper>
+                  </div>
+                </div>
+                <Spinner />
+              </UIProvider>
+            </ReduxProvider>
           </QueryProvider>
         </AuthProvider>
       </body>

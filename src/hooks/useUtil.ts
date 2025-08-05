@@ -16,6 +16,10 @@ export const formatSringDate = (date: string, symbol: string) => {
   return date?.replace(/(\d{4})(\d{2})(\d{2})/, `$1${symbol}$2${symbol}$3`);
 };
 
+export const getFormatTranslateX = (translateX: string) => {
+  return translateX.replace(/[(\)\a-z\s]/gim, "");
+};
+
 export const formateDate = (dateData: Date, type: "US" | "NOR"): string => {
   let dateStr: string;
   const date = new Date(dateData);

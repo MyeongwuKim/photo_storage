@@ -1,44 +1,16 @@
 "use client";
 import BoxItem from "@/components/ui/boxItem";
 import { Tag, Post, File } from "@prisma/client";
-import {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import CircleSpinner from "@/components/loading/circleSpinnder";
 import ArrowBtnView from "./arrowBtnView";
-import {
-  notFound,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
-import { createModal, createToast } from "@/hooks/useEvent";
-import UploadModal from "../modal/uploadModal";
-import {
-  AdjustmentsHorizontalIcon,
-  ArrowUpTrayIcon,
-  CheckIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/solid";
-import {
-  formateDate,
-  formatSringDate,
-  getScrollValue,
-  setScrollValue,
-} from "@/hooks/useUtil";
-import Dropdown from "./dropdown";
-
-import DatePicker from "./datePicker";
-import { Action } from "@prisma/client/runtime/library";
-import RadioComp from "./radioComp";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import UploadModal from "../popup/modal/uploadModal";
+import { ArrowUpTrayIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { getScrollValue, setScrollValue } from "@/hooks/useUtil";
+import { useUI } from "../uiProvider";
 
 type PostType = Post & {
   _count: { files: number };
@@ -124,6 +96,7 @@ const InfiniteScroll = ({
   const route = useRouter();
   const params = useSearchParams();
   const pathname = usePathname();
+  const { openModal, openToast } = useUI();
   const [ref, inView] = useInView({ threshold: 0.8 });
   const [item, setItem] = useState<PostType[] | File[] | TagType[] | FavType[]>(
     []
@@ -327,9 +300,7 @@ const InfiniteScroll = ({
       <div className="fixed bottom-4 right-4 h-[60px] w-[60px] md:hidden sm:visible z-10">
         <button
           className="w-full h-full flex justify-center items-center rounded-full  px-4 font-semibold blueBtn"
-          onClick={() => {
-            createModal(<UploadModal />);
-          }}
+          onClick={() => openModal("UPLOAD")}
         >
           <ArrowUpTrayIcon className="w-5 h-5" />
         </button>

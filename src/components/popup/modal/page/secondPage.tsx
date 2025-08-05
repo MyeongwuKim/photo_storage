@@ -3,7 +3,6 @@ import SearchLocationInput from "@/components/google/locationInput";
 import InputField from "@/components/ui/inputField";
 import TagInput from "@/components/ui/tagInput";
 import TextBox from "@/components/ui/textarea";
-import { createModal } from "@/hooks/useEvent";
 import { NextPage } from "next";
 import {
   Dispatch,
@@ -14,9 +13,10 @@ import {
   useState,
 } from "react";
 import { useForm } from "react-hook-form";
-import MapModal from "../mapmodal";
 import DatePicker from "@/components/ui/datePicker";
 import StartRating from "@/components/ui/starRating";
+import { useUI } from "@/components/uiProvider";
+import { useUploadModal } from "../uploadModal";
 
 interface SecondPageProps {
   valueRef: MutableRefObject<{
@@ -26,7 +26,6 @@ interface SecondPageProps {
     mapData: MapDataTyhpe;
     score: number;
   }>;
-  files: any;
 }
 
 type MapDataTyhpe = {
@@ -39,8 +38,10 @@ type DateStateType = {
   date: Date;
 };
 
-const SecondPage: NextPage<SecondPageProps> = ({ valueRef, files }) => {
+const SecondPage: NextPage<SecondPageProps> = ({ valueRef }) => {
   const { register, setValue } = useForm();
+  const { state } = useUploadModal();
+  const { openModal } = useUI();
   const [defScore, setDefScore] = useState<number>(5);
   const [mapData, setMapData] = useState<{
     placeAddress: string;
@@ -52,11 +53,11 @@ const SecondPage: NextPage<SecondPageProps> = ({ valueRef, files }) => {
   }, [valueRef.current.mapData]);
   useEffect(() => {
     //파일 날렸을때 comment만 따로 초기화
-    if (files.length <= 0) {
+    if (state.fileItem.length <= 0) {
       setValue("comment", "");
       setDefScore(5);
     }
-  }, [files]);
+  }, [state.fileItem]);
 
   return (
     <div className="w-full h-full z-50">
@@ -90,15 +91,12 @@ const SecondPage: NextPage<SecondPageProps> = ({ valueRef, files }) => {
         </div>
         <div className="w-full h-[54px]">
           <InputField
-            onClick={() => {
-              createModal(
-                <MapModal
-                  callback={(mapData) => {
-                    valueRef.current.mapData = mapData;
-                    setMapData(valueRef.current.mapData);
-                  }}
-                />
-              );
+            onClick={async () => {
+              const result = await openModal("MAP");
+              if (result) {
+                valueRef.current.mapData = result;
+                setMapData(valueRef.current.mapData);
+              }
             }}
             value={mapData.placeAddress}
             readOnly={true}
