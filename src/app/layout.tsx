@@ -11,7 +11,6 @@ import {
   StarIcon,
 } from "@heroicons/react/20/solid";
 import AuthProvider from "@/components/authProvider";
-import Spinner from "@/components/loading/spinner";
 import { QueryProvider } from "@/components/queryProvider";
 import Script from "next/script";
 import { Inter } from "next/font/google";
@@ -142,7 +141,6 @@ export default function RootLayout({
                     <ErrorBoundryWrapper>{children}</ErrorBoundryWrapper>
                   </div>
                 </div>
-                <Spinner />
               </UIProvider>
             </ReduxProvider>
           </QueryProvider>

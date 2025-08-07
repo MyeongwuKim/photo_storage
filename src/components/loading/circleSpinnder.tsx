@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
-
 const CircleSpinner = ({ active }: { active: boolean }) => {
   return (
     <svg

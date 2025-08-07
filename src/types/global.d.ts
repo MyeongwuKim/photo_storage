@@ -10,6 +10,10 @@
 //   files: PostSFileType[];
 // }
 
+declare interface GlobalResProps extends Response {
+  ok: boolean;
+  error: string;
+}
 declare type FileType = {
   url: string;
   type: string;

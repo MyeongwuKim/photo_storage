@@ -2,7 +2,6 @@
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
 import Dropdown from "./dropdown";
 import DatePicker from "./datePicker";
-import { createToast } from "@/hooks/useEvent";
 import { formateDate, formatSringDate } from "@/hooks/useUtil";
 import {
   Dispatch,
@@ -13,6 +12,7 @@ import {
 } from "react";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import RadioComp from "./radioComp";
+import { useUI } from "../uiProvider";
 
 type DateFilterType = {
   type: "create" | "shoot";
@@ -130,6 +130,7 @@ export const Drawer = ({
     isInit: boolean
   ) => string;
 }) => {
+  const { openToast } = useUI();
   const route = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
@@ -205,7 +206,7 @@ export const Drawer = ({
                 const from = formateDate(data, "NOR").replace(/[.]/g, "");
 
                 if (dateState.from && Number(from) > Number(to)) {
-                  createToast("날짜값이 잘못되었습니다.", true);
+                  openToast(true, "날짜값이 잘못되었습니다.", 1.5);
                   return false;
                 }
               }
@@ -225,7 +226,7 @@ export const Drawer = ({
                 const from = dateState.from?.replace(/[.]/g, "");
                 const to = formateDate(data, "NOR").replace(/[.]/g, "");
                 if (dateState.from && Number(from) > Number(to)) {
-                  createToast("날짜값이 잘못되었습니다.", true);
+                  openToast(true, "날짜값이 잘못되었습니다.", 1.5);
                   return false;
                 }
               }

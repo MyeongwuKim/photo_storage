@@ -8,18 +8,24 @@ import React, {
   useState,
 } from "react";
 import { addToast, removeToast } from "@/redux/reducer/ui/toastReducer";
-import { addModal, removeModal } from "@/redux/reducer/ui/modalReducer";
+import { active, deActive } from "@/redux/reducer/ui/loadingReducer";
+import {
+  addModal,
+  ModalType,
+  removeModal,
+} from "@/redux/reducer/ui/modalReducer";
 import Toast from "./popup/toast/toast";
 import { v4 as uuidv4 } from "uuid"; // uuid 라이브러리 임포트
 import UploadModal from "./popup/modal/uploadModal";
 import { modalManager } from "@/lib/modalManager";
 import AlertModal from "./popup/modal/alertModal";
 import MapModal from "./popup/modal/mapmodal";
-
-type ModalType = "UPLOAD" | "ALERT" | "MAP";
+import DatePickerModal from "./popup/modal/datePickerModal";
+import GlobalLoading from "./loading/globalLoading";
 
 // 2. Modal 별 props 정의
 type ModalPropsMap = {
+  DATEPICKER: { date: string | null };
   UPLOAD: undefined; // or void
   ALERT: { msg: string; btnMsg: string[]; title?: string };
   MAP: undefined;
@@ -28,6 +34,7 @@ type ModalPropsMap = {
 type PopupContextType = {
   openToast: (isWarning: boolean, msg: string, time: number) => void;
   openModal: {
+    (type: "DATEPICKER", props: { date: string | null }): Promise<any>;
     (type: "MAP"): Promise<any>;
     (type: "UPLOAD"): Promise<any>;
     (
@@ -35,6 +42,7 @@ type PopupContextType = {
       props: { msg: string; btnMsg: string[]; title?: string }
     ): Promise<any>;
   };
+  activeLoading: (isActive: boolean, msg?: string) => void;
 };
 
 const MODAL_MAP: {
@@ -43,6 +51,9 @@ const MODAL_MAP: {
     onClose: (result?: any) => void
   ) => ReactNode;
 } = {
+  DATEPICKER: (props, onClose) => (
+    <DatePickerModal date={props.date} onClose={onClose} />
+  ),
   UPLOAD: (_props, onClose) => <UploadModal onClose={onClose} />,
   ALERT: (props, onClose) => (
     <AlertModal
@@ -60,6 +71,7 @@ const PopupContext = createContext<PopupContextType | undefined>(undefined);
 export const UIProvider = ({ children }: { children: React.ReactNode }) => {
   const toastItems = useAppSelector((state) => state.toastReducer.toastItem);
   const modalItems = useAppSelector((state) => state.modalReducer.modalItem);
+  const loadingObj = useAppSelector((state) => state.loadingRecuer.obj);
 
   const dispatch = useAppDispatch();
 
@@ -73,6 +85,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
   const openModal: {
     (type: "MAP"): Promise<any>;
     (type: "UPLOAD"): Promise<any>;
+    (type: "DATEPICKER", props: { date: String | null }): Promise<any>;
     (type: "ALERT", props: { msg: string; btnMsg: string[] }): Promise<any>;
   } = async (type: ModalType, props?: any): Promise<any> => {
     const id = uuidv4();
@@ -81,7 +94,15 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
     return result;
   };
 
-  const value = { openToast, openModal };
+  const activeLoading = useCallback(
+    (isActive: boolean, msg?: string) => {
+      if (isActive) dispatch(active({ msg: msg ? msg : "" }));
+      else dispatch(deActive());
+    },
+    [dispatch]
+  );
+
+  const value = { openToast, openModal, activeLoading };
   const handleClose = (id: string) => (result?: any) => {
     dispatch(removeModal(id));
     modalManager.closeModal(id, result); // 여기서 결과 전달
@@ -94,17 +115,20 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         const onClose = handleClose(v.id);
         let content = null;
         switch (v.type) {
-          case "UPLOAD":
-            content = MODAL_MAP.UPLOAD(undefined, onClose);
-            break;
-          case "MAP":
-            content = MODAL_MAP.MAP(undefined, onClose);
-            break;
           case "ALERT":
             content = MODAL_MAP.ALERT(
               v.props as { msg: string; btnMsg: string[] },
               onClose
             );
+            break;
+          case "DATEPICKER":
+            content = MODAL_MAP.DATEPICKER(
+              v.props as { date: string | null },
+              onClose
+            );
+            break;
+          default:
+            content = MODAL_MAP[v.type](undefined, onClose);
             break;
         }
         return <div key={v.id}>{content}</div>;
@@ -129,6 +153,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
           ))}
         </div>
       )}
+      {loadingObj.isActive && <GlobalLoading msg={loadingObj.msg} />}
     </PopupContext.Provider>
   );
 };

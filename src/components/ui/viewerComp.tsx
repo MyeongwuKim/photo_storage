@@ -14,7 +14,7 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/solid";
 import { File, Post, Tag } from "@prisma/client";
-import { Carousel, Datepicker } from "flowbite-react";
+import { Carousel } from "flowbite-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -22,18 +22,19 @@ import StreamItem from "./streamItem";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, usePathname, useRouter, notFound } from "next/navigation";
 import { ArrowsPointingInIcon } from "@heroicons/react/20/solid";
-import { createModal, createToast } from "@/hooks/useEvent";
-import AlertModal from "../popup/modal/alertModal";
+import { useUI } from "../uiProvider";
 
-interface ResponseProps {
-  ok: boolean;
-  error?: string;
-}
-interface PostResponse extends ResponseProps {
+type Variables = {
+  fileId: string;
+  isFav: boolean;
+  method: "POST" | "DELETE";
+};
+
+interface PostResponse extends GlobalResProps {
   postData: Post & { tags: Tag[] };
 }
 
-interface AroundResponse extends ResponseProps {
+interface AroundResponse extends GlobalResProps {
   data: {
     prev: string;
     next: string;
@@ -76,6 +77,7 @@ const fetchFileData = async (id: string, filter: string | undefined) => {
 };
 
 const ViewerComp = () => {
+  const { openModal, openToast } = useUI();
   const queryClient = useQueryClient();
   const { id, filter } = useParams<{ id: string[]; filter: string }>();
   const route = useRouter();
@@ -89,41 +91,54 @@ const ViewerComp = () => {
     queryFn: () => fetchAroundData(id[0], filter, id[1]),
   });
   const { data: fileData, isLoading: fileLoading } = useQuery<
-    ResponseProps & { data: File[] }
+    GlobalResProps & { data: File[] }
   >({
     queryKey: ["file" + "_" + id[0]],
     queryFn: () => fetchFileData(id[0], filter),
   });
   //mutation
-  const updatePost = useMutation({
-    mutationFn: async ({
-      fileId,
-      isFav,
-      method,
-    }: {
-      fileId: string;
-      isFav: boolean;
-      method: "POST" | "DELETE";
-    }) =>
-      await fetch(`/api/file/${fileId}`, {
+  const updatePost = useMutation<
+    Response,
+    Error,
+    Variables,
+    { prevData: GlobalResProps & { data: File[] } }
+  >({
+    mutationFn: async ({ fileId, isFav, method }) => {
+      return await fetch(`/api/file/${fileId}`, {
         method,
         body: JSON.stringify({ isFav }),
-      }),
+      });
+    },
     onSuccess: async (data) => {
       const result = await data.json();
       if (!result.ok) {
-        createToast(result.error, true);
+        openToast(true, result.error, 1.5);
       }
     },
+    onError: (error, variables, context) => {
+      if (context?.prevData) {
+        queryClient.setQueryData(["file", id[0]], context.prevData); // 원상복구
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["file", id[0]] });
+    },
     onMutate: ({ fileId }) => {
-      const newFileData: ResponseProps & { data: File[] } = {
-        ok: true,
-        data: fileData?.data.map((file) => {
-          return file.id == fileId ? { ...file, isFav: !file.isFav } : file;
-        })!,
+      console.log(fileId);
+      const prevData = queryClient.getQueryData<
+        GlobalResProps & { data: File[] }
+      >(["file_" + id[0]]);
+
+      if (!prevData) return;
+
+      const newData = {
+        ...prevData,
+        data: prevData.data.map((file) =>
+          file.id === fileId ? { ...file, isFav: !file.isFav } : file
+        ),
       };
-      queryClient.setQueryData(["file", id[0]], newFileData);
-      return newFileData;
+      queryClient.setQueryData(["file_" + id[0]], newData);
+      return { prevData }; // rollback을 위해
     },
   });
   const deleteTags = useMutation({
@@ -136,7 +151,7 @@ const ViewerComp = () => {
       const result = await data.json();
       if (result.ok) {
       } else {
-        createToast(result.error, true);
+        openToast(true, result.error, 1.5);
       }
     },
   });
@@ -148,7 +163,7 @@ const ViewerComp = () => {
     onSuccess: async (data) => {
       const result = await data.json();
       if (result.ok) {
-        createToast("삭제 완료하였습니다", false);
+        openToast(false, "삭제 되었습니다.", 1.5);
 
         await queryClient.refetchQueries({
           queryKey: ["tab"],
@@ -282,6 +297,7 @@ const ViewerComp = () => {
                         const heartCheckbox = document.getElementById(
                           `checkbox_${v.fileId}`
                         );
+
                         if (!v.isFav) heartCheckbox?.classList.add("heartAnim");
                         else heartCheckbox?.classList.remove("heartAnim");
 
@@ -359,22 +375,15 @@ const ViewerComp = () => {
               </div>
               <div className="flex gap-4">
                 <TrashIcon
-                  onClick={() => {
-                    createModal(
-                      <AlertModal
-                        btnMsg={["삭제", "취소"]}
-                        msg={
-                          <div>
-                            <div className="text-lg">
-                              정말로 삭제하시겠습니까?
-                            </div>
-                          </div>
-                        }
-                        callback={() => {
-                          deletePost.mutate(data?.postData.id!);
-                        }}
-                      />
-                    );
+                  onClick={async () => {
+                    const result = await openModal("ALERT", {
+                      msg: "삭제 하시겠습니까?",
+                      btnMsg: ["삭제", "취소"],
+                      title: "게시물 삭제",
+                    });
+                    if (result) {
+                      deletePost.mutate(data?.postData.id!);
+                    }
                   }}
                   className={`${
                     filter == "post" || filter == "tag" ? `visible` : "hidden"

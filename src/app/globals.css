@@ -25,6 +25,12 @@
   }
 }
 
+@layer utilities {
+  .bg-panel {
+    @apply bg-panel-light dark:bg-panel-dark;
+  }
+}
+
 #tagInput:empty:before {
   content: attr(aria-placeholder);
   pointer-events: none;

@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ReactNode } from "react";
 
-type ModalType = "UPLOAD" | "ALERT" | "MAP";
+export type ModalType = "UPLOAD" | "ALERT" | "MAP" | "DATEPICKER";
 
 type ModalPropsMap = {
   UPLOAD: undefined;
-  MAP: undefined;
+  DATEPICKER: undefined;
+  MAP: { date: string | null };
   ALERT: { msg: string; btnMsg: string[]; title?: string };
 };
 

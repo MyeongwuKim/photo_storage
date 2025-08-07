@@ -22,6 +22,10 @@ const config: Config = {
         default: "36px",
       },
       colors: {
+        panel: {
+          light: "rgba(249,249,249,0.5)", // 라이트 모드 색상
+          dark: "rgba(0,0,0,0.5)", // 다크 모드 색상
+        },
         darkText: {
           1: "#a1a1a1",
           2: "#ededed",

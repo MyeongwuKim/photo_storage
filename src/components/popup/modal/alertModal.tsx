@@ -39,7 +39,7 @@ const AlertModal = ({ btnMsg, msg, onClose, title }: AlertModalProps) => {
       </div>
       <div
         id="alertPannel"
-        className="absolute top-0 w-full h-full bg-[rgba(0,0,0,0.5)] "
+        className="absolute top-0 w-full h-full bg-panel "
       />
     </div>
   );

@@ -8,6 +8,7 @@ import {
   Dispatch,
   MutableRefObject,
   SetStateAction,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -18,46 +19,27 @@ import StartRating from "@/components/ui/starRating";
 import { useUI } from "@/components/uiProvider";
 import { useUploadModal } from "../uploadModal";
 
-interface SecondPageProps {
-  valueRef: MutableRefObject<{
-    tag: string[];
-    comment: string;
-    date: Date;
-    mapData: MapDataTyhpe;
-    score: number;
-  }>;
-}
-
-type MapDataTyhpe = {
-  placeAddress: string;
-  location: google.maps.LatLngLiteral;
+type InfoType = {
+  tag: string[];
+  comment: string;
+  date: Date | null;
+  mapData: MapDataType;
+  score: number;
 };
 
-type DateStateType = {
-  setDateState: Dispatch<SetStateAction<Date>>;
-  date: Date;
-};
-
-const SecondPage: NextPage<SecondPageProps> = ({ valueRef }) => {
-  const { register, setValue } = useForm();
-  const { state } = useUploadModal();
+const SecondPage = () => {
+  const { register, setValue, reset } = useForm();
+  const { state, dispatch } = useUploadModal();
   const { openModal } = useUI();
-  const [defScore, setDefScore] = useState<number>(5);
-  const [mapData, setMapData] = useState<{
-    placeAddress: string;
-    location: google.maps.LatLngLiteral;
-  }>({ location: { lat: 0, lng: 0 }, placeAddress: "" });
-
   useEffect(() => {
-    setMapData(valueRef.current.mapData);
-  }, [valueRef.current.mapData]);
-  useEffect(() => {
-    //파일 날렸을때 comment만 따로 초기화
     if (state.fileItem.length <= 0) {
-      setValue("comment", "");
-      setDefScore(5);
+      console.log("reset!");
+      reset({ comment: "", tag: "" });
     }
   }, [state.fileItem]);
+  const updateInfo = useCallback((props: Partial<InfoType>) => {
+    dispatch({ type: "SET_INFO", payload: props });
+  }, []);
 
   return (
     <div className="w-full h-full z-50">
@@ -67,9 +49,9 @@ const SecondPage: NextPage<SecondPageProps> = ({ valueRef }) => {
         </div>
         <div className="w-full h-[54px]">
           <DatePicker
-            defaultDate={valueRef.current.date}
+            defaultDate={state.info.date}
             callback={(date) => {
-              if (date) valueRef.current.date = date;
+              updateInfo({ date });
               return true;
             }}
           />
@@ -78,11 +60,12 @@ const SecondPage: NextPage<SecondPageProps> = ({ valueRef }) => {
         <div className="dark:text-darkText-2 text-lightText-2 font-semibold">
           태그
         </div>
-        <div className="w-full h-auto">
+        <div className="w-full">
           <TagInput
-            defaultValue={valueRef.current.tag}
+            register={{ ...register("tag") }}
+            defaultValue={state.info.tag}
             callback={(tags) => {
-              valueRef.current.tag = tags;
+              updateInfo({ tag: tags });
             }}
           />
         </div>
@@ -94,11 +77,10 @@ const SecondPage: NextPage<SecondPageProps> = ({ valueRef }) => {
             onClick={async () => {
               const result = await openModal("MAP");
               if (result) {
-                valueRef.current.mapData = result;
-                setMapData(valueRef.current.mapData);
+                updateInfo({ mapData: result });
               }
             }}
-            value={mapData.placeAddress}
+            value={state.info.mapData.placeAddress}
             readOnly={true}
             placeholder="위치를 입력해보세요."
           />
@@ -111,7 +93,7 @@ const SecondPage: NextPage<SecondPageProps> = ({ valueRef }) => {
             register={{
               ...register("comment", {
                 onChange: (event) => {
-                  valueRef.current.comment = event.target.value;
+                  updateInfo({ comment: event.target.value });
                 },
               }),
             }}
@@ -122,11 +104,10 @@ const SecondPage: NextPage<SecondPageProps> = ({ valueRef }) => {
           별점
         </div>
         <StartRating
-          defaultValue={defScore}
+          defaultValue={state.info.score}
           readonly={false}
           callback={(score) => {
-            valueRef.current.score = score;
-            setDefScore(score);
+            updateInfo({ score });
           }}
         />
       </div>
