@@ -12,6 +12,7 @@ interface TagInputProps {
 
 const TagInput = ({ callback, defaultValue, register }: TagInputProps) => {
   const [tags, setTags] = useState<string[]>([]);
+  const [isComposing, setIsComposing] = useState(false);
   const [isFocus, setFocus] = useState<boolean>(false);
   const [placeHolder, setPlaceHolder] = useState<string>(
     "태그 입력후 엔터나 쉼표를 눌러보세요."
@@ -48,13 +49,16 @@ border-gray-300 shadow-sm rounded-lg dark:border-gray-600 bg-gray-50
         />
       ))}
       <input
-        {...register}
+        name={register.name}
+        ref={register.ref}
         onBlur={() => {
           if (callback) callback(tags);
           setFocus(false);
         }}
-        id="tagInputItem"
+        onCompositionStart={() => setIsComposing(true)}
+        onCompositionEnd={() => setIsComposing(false)}
         onKeyDown={(e: any) => {
+          if (isComposing) return; // 한글 조합 중이면 무시
           if (e.key === "Backspace") {
             if (e.target.value?.length <= 0 && tags.length > 0) {
               setTags((prevTags) => {
@@ -65,13 +69,13 @@ border-gray-300 shadow-sm rounded-lg dark:border-gray-600 bg-gray-50
               e.preventDefault();
             }
           } else if (e.key === "Enter") {
+            console.log("enter!");
             if (e.target.value?.length > 0) {
               setTags((prevTags) => {
                 if (prevTags.includes(e.target.value)) {
                   e.target.value = "";
                   return prevTags;
                 }
-
                 const newTags = [...prevTags, e.target.value];
                 e.target.value = "";
                 return newTags;

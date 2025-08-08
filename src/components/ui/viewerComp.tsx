@@ -172,7 +172,7 @@ const ViewerComp = () => {
         route.replace("/");
         deleteTags.mutate(result.tags);
       } else {
-        console.log(result);
+        openToast(true, result.error, 1.5);
       }
     },
   });

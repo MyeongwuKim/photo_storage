@@ -213,7 +213,7 @@ const UploadModal = ({ onClose }: { onClose: (result?: any) => void }) => {
   };
 
   const exitEvt = async () => {
-    if (state.fileItem.length <= 0) onClose();
+    if (state.fileItem.length <= 0 || flowNumber == 2) onClose();
     else {
       const result = await openModal("ALERT", {
         btnMsg: ["삭제", "취소"],
@@ -302,12 +302,10 @@ const UploadModal = ({ onClose }: { onClose: (result?: any) => void }) => {
                       }
                     }
 
-                    // await createPost.mutate({
-                    //   files: newFiles,
-                    //   info: secondPageRef.current,
-                    // });
-
-                    // await Revalidate(pathname);
+                    await createPost.mutate({
+                      files: newFiles,
+                      info: state.info,
+                    });
                   }}
                   className={`${slideBtnStyle} right-3 ${
                     flowNumber >= 2 ? "hidden" : ""
