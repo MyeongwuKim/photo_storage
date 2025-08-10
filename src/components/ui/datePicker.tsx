@@ -135,7 +135,6 @@ const DatePicker = ({
         sizing="sm"
         readOnly={true}
         onClick={async (e) => {
-          console.log(`efaultDate. ${dateObj.origin}`);
           (e.target as HTMLElement).focus();
           const result = await openModal("DATEPICKER", {
             date: dateObj.origin,

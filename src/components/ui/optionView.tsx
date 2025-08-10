@@ -154,7 +154,7 @@ export const Drawer = ({
       const qryString = createQueryString(qrys, true);
       url =
         qryString.replace(pathname, "").length > 0 ? "?" + qryString : pathname;
-      route.replace(url);
+      route.push(url);
     },
     [dateState]
   );

@@ -33,7 +33,6 @@ const SecondPage = () => {
   const { openModal } = useUI();
   useEffect(() => {
     if (state.fileItem.length <= 0) {
-      console.log("reset!");
       reset({ comment: "", tag: "" });
     }
   }, [state.fileItem]);

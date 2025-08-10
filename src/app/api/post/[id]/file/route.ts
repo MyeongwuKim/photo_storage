@@ -6,7 +6,7 @@ export const GET = async (req: NextRequest, { params }: { params: any }) => {
   const filter = req.nextUrl.searchParams.get("filter");
   let data;
   try {
-    if (!filter || filter == "tag") {
+    if (!filter || filter == "tag" || filter == "search") {
       data = await db.post.findUnique({
         where: {
           id: id,

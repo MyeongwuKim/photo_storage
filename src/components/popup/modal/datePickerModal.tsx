@@ -11,9 +11,6 @@ export default function DatePickerModal({
   onClose,
   date,
 }: DatePickerModalProps) {
-  useEffect(() => {
-    console.log(`modal! ${date}`);
-  }, [date]);
   return (
     <div
       id="datePickerModal"

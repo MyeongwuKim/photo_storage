@@ -117,14 +117,13 @@ const ViewerComp = () => {
     },
     onError: (error, variables, context) => {
       if (context?.prevData) {
-        queryClient.setQueryData(["file", id[0]], context.prevData); // 원상복구
+        queryClient.setQueryData(["file_" + id[0]], context.prevData); // 원상복구
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["file", id[0]] });
+      queryClient.invalidateQueries({ queryKey: ["file_" + id[0]] });
     },
     onMutate: ({ fileId }) => {
-      console.log(fileId);
       const prevData = queryClient.getQueryData<
         GlobalResProps & { data: File[] }
       >(["file_" + id[0]]);

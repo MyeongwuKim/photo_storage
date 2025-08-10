@@ -9,7 +9,7 @@ export const GET = async (req: NextRequest, { params }: { params: any }) => {
 
   try {
     let postData;
-    if (!filter || filter == "tag") {
+    if (!filter || filter == "tag" || filter == "search") {
       postData = await db.post.findUnique({
         where: { id },
         include: {
@@ -50,7 +50,6 @@ export const GET = async (req: NextRequest, { params }: { params: any }) => {
     if (!postData) {
       return NextResponse.json({ ok: false }, { status: 404 });
     }
-
     return NextResponse.json({ ok: true, postData });
   } catch (e: any) {
     let error = e?.code
