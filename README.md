@@ -12,10 +12,18 @@
 
 ## 프로젝트 상세기능
 
+<img width="480" height="480" alt="스크린샷 2025-08-10 오후 6 04 35" src="https://github.com/user-attachments/assets/1dd5394d-c6e0-4bcd-8e74-19dd98726f87" />
+<img width="480" height="480" alt="스크린샷 2025-08-10 오후 6 04 22" src="https://github.com/user-attachments/assets/7c0b86e9-f5a5-4a59-8f5e-0f4c4e3b229b" />
+
 ### **로그인**
 
 - Next-auth를 활용한 oAuth
 - 간단하게 카카오톡 아이디로 로그인 할 수 있는 기능을 제공함
+  
+<img width="480" height="480" alt="스크린샷 2025-08-10 오후 6 12 26" src="https://github.com/user-attachments/assets/dde6fdb7-a858-4a13-bdc5-516094242b48" />
+<img width="480" height="480" alt="스크린샷 2025-08-10 오후 6 23 58" src="https://github.com/user-attachments/assets/24e009b6-2525-4a6f-8784-1d1c25bde3d6" />
+<img width="480" height="480" alt="스크린샷 2025-08-10 오후 6 18 26" src="https://github.com/user-attachments/assets/61dc1aef-4066-463e-b588-d52df9220d7a" />
+<img width="480" height="480" alt="스크린샷 2025-08-10 오후 6 18 04" src="https://github.com/user-attachments/assets/68f3261e-0c9a-4a18-98d4-481c96bf4b2d" />
 
 ### **업로드**
 
