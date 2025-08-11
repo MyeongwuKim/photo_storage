@@ -154,7 +154,8 @@ export const Drawer = ({
       const qryString = createQueryString(qrys, true);
       url =
         qryString.replace(pathname, "").length > 0 ? "?" + qryString : pathname;
-      route.push(url);
+      route.replace(url);
+      route.refresh(); // 캐시 무시하고 새로 데이터 요청
     },
     [dateState]
   );
