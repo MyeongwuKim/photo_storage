@@ -12,18 +12,18 @@
 
 ## 프로젝트 상세기능
 
-<img width="480" height="480" alt="스크린샷 2025-08-10 오후 6 04 35" src="https://github.com/user-attachments/assets/1dd5394d-c6e0-4bcd-8e74-19dd98726f87" />
-<img width="480" height="480" alt="스크린샷 2025-08-10 오후 6 04 22" src="https://github.com/user-attachments/assets/7c0b86e9-f5a5-4a59-8f5e-0f4c4e3b229b" />
+<img width="240" height="240" alt="스크린샷 2025-08-10 오후 6 04 35" src="https://github.com/user-attachments/assets/1dd5394d-c6e0-4bcd-8e74-19dd98726f87" />
+<img width="240" height="240" alt="스크린샷 2025-08-10 오후 6 04 22" src="https://github.com/user-attachments/assets/7c0b86e9-f5a5-4a59-8f5e-0f4c4e3b229b" />
 
 ### **로그인**
 
 - Next-auth를 활용한 oAuth
 - 간단하게 카카오톡 아이디로 로그인 할 수 있는 기능을 제공함
   
-<img width="480" height="480" alt="스크린샷 2025-08-10 오후 6 12 26" src="https://github.com/user-attachments/assets/dde6fdb7-a858-4a13-bdc5-516094242b48" />
-<img width="480" height="480" alt="스크린샷 2025-08-10 오후 6 23 58" src="https://github.com/user-attachments/assets/24e009b6-2525-4a6f-8784-1d1c25bde3d6" />
-<img width="480" height="480" alt="스크린샷 2025-08-10 오후 6 18 26" src="https://github.com/user-attachments/assets/61dc1aef-4066-463e-b588-d52df9220d7a" />
-<img width="480" height="480" alt="스크린샷 2025-08-10 오후 6 18 04" src="https://github.com/user-attachments/assets/68f3261e-0c9a-4a18-98d4-481c96bf4b2d" />
+<img width="240" height="240" alt="스크린샷 2025-08-10 오후 6 12 26" src="https://github.com/user-attachments/assets/dde6fdb7-a858-4a13-bdc5-516094242b48" />
+<img width="240" height="240" alt="스크린샷 2025-08-10 오후 6 23 58" src="https://github.com/user-attachments/assets/24e009b6-2525-4a6f-8784-1d1c25bde3d6" />
+<img width="240" height="240" alt="스크린샷 2025-08-10 오후 6 18 26" src="https://github.com/user-attachments/assets/61dc1aef-4066-463e-b588-d52df9220d7a" />
+<img width="240" height="240" alt="스크린샷 2025-08-10 오후 6 18 04" src="https://github.com/user-attachments/assets/68f3261e-0c9a-4a18-98d4-481c96bf4b2d" />
 
 ### **업로드**
 
@@ -32,8 +32,8 @@
 - Google Maps API를 연동해 사진이나 동영상 촬영 위치 정보를 검색하고 입력할 수 있음
 - 이미지, 동영상에 대한 촬영 날짜, 태그, 코멘트, 별점을 기록할수 있게 함
   
-<img width="480" height="480" alt="스크린샷 2025-08-10 오후 6 47 47" src="https://github.com/user-attachments/assets/09b4f215-956d-4464-a83b-eed508f94618" />
-<img width="480" height="480" alt="스크린샷 2025-08-10 오후 7 08 53" src="https://github.com/user-attachments/assets/5fdc0113-1e94-4c53-b752-ea0b12668965" />
+<img width="240" height="240" alt="스크린샷 2025-08-10 오후 6 47 47" src="https://github.com/user-attachments/assets/09b4f215-956d-4464-a83b-eed508f94618" />
+<img width="240" height="240" alt="스크린샷 2025-08-10 오후 7 08 53" src="https://github.com/user-attachments/assets/5fdc0113-1e94-4c53-b752-ea0b12668965" />
 
 ### 피드
 
@@ -41,8 +41,8 @@
 - prefetchInfiniteQuery를 활용해 무한 스크롤 데이터를 사전에 캐싱하고, 페이지를 넘길 때 끊김 없이 빠르고 부드러운 데이터 로딩 경험을 제공하도록 구현함
 - 생성,촬영 순으로 날짜를 필터링 할 수 있음
   
-<img width="480" height="480" alt="스크린샷 2025-08-10 오후 7 42 11" src="https://github.com/user-attachments/assets/f17b23d2-2bc4-4ee9-9cae-5f4efe2b3224" />
-<img width="480" height="480" alt="스크린샷 2025-08-10 오후 7 42 21" src="https://github.com/user-attachments/assets/a5e337a3-86df-4d57-9985-7a90f805ee8b" />
+<img width="240" height="240" alt="스크린샷 2025-08-10 오후 7 42 11" src="https://github.com/user-attachments/assets/f17b23d2-2bc4-4ee9-9cae-5f4efe2b3224" />
+<img width="240" height="240" alt="스크린샷 2025-08-10 오후 7 42 21" src="https://github.com/user-attachments/assets/a5e337a3-86df-4d57-9985-7a90f805ee8b" />
  
 ### **피드 디테일**
 
@@ -50,19 +50,19 @@
 - react-query의 캐시 조작(cache manipulation) 기능을 활용해, 하트 클릭 시 서버에 성공적으로 반영된 후에는 전체 데이터를 다시 불러오는 대신, 해당 아이템에 대한 캐시 데이터를 직접 업데이트 하여 UI를 즉시 반영하도록 구현함
 - 입력한 정보를 뷰의 바텀에서 확인이 가능(날짜,코멘트,태그,점수,구글맵)
   
-<img width="480" height="480" alt="스크린샷 2025-08-10 오후 9 14 20" src="https://github.com/user-attachments/assets/9f01560b-c8a2-4031-8e23-083508b220ee" />
-<img width="480" height="480" alt="스크린샷 2025-08-10 오후 9 13 59" src="https://github.com/user-attachments/assets/215f960e-7d24-4cc8-a802-04939d272945" />
+<img width="240" height="240" alt="스크린샷 2025-08-10 오후 9 14 20" src="https://github.com/user-attachments/assets/9f01560b-c8a2-4031-8e23-083508b220ee" />
+<img width="240" height="240" alt="스크린샷 2025-08-10 오후 9 13 59" src="https://github.com/user-attachments/assets/215f960e-7d24-4cc8-a802-04939d272945" />
 
 ### **피드 검색**
 
 - 업로드 된 게시물을 태그,코멘트,위치 키워드로 필터링하여 검색할수 있음
   
-<img width="480" height="480" alt="스크린샷 2025-08-10 오후 9 23 52" src="https://github.com/user-attachments/assets/46776415-d62b-4678-8c6b-0f3d14c0d719" />
-<img width="480" height="480" alt="스크린샷 2025-08-10 오후 9 18 37" src="https://github.com/user-attachments/assets/fead9b4c-06e7-4bbf-8458-6c4be2cbf946" />
-<img width="240" height="480" alt="스크린샷 2025-08-10 오후 9 18 57" src="https://github.com/user-attachments/assets/8d578120-39d8-46ca-aa35-391389523771" />
-<img width="240" height="480" alt="스크린샷 2025-08-10 오후 9 20 37" src="https://github.com/user-attachments/assets/c580e0cd-a916-4585-915e-c78f178bb369" />
-<img width="240" height="480" alt="스크린샷 2025-08-10 오후 9 18 30" src="https://github.com/user-attachments/assets/95d0a0ff-6de6-48dc-adbc-6224d690fd0f" />
-<img width="240" height="480" alt="스크린샷 2025-08-10 오후 9 19 14" src="https://github.com/user-attachments/assets/f51e9467-6a5c-472c-a666-3d16fd7ebb67" />
+<img width="240" height="240" alt="스크린샷 2025-08-10 오후 9 23 52" src="https://github.com/user-attachments/assets/46776415-d62b-4678-8c6b-0f3d14c0d719" />
+<img width="240" height="240" alt="스크린샷 2025-08-10 오후 9 18 37" src="https://github.com/user-attachments/assets/fead9b4c-06e7-4bbf-8458-6c4be2cbf946" />
+<img width="240" height="240" alt="스크린샷 2025-08-10 오후 9 18 57" src="https://github.com/user-attachments/assets/8d578120-39d8-46ca-aa35-391389523771" />
+<img width="240" height="240" alt="스크린샷 2025-08-10 오후 9 20 37" src="https://github.com/user-attachments/assets/c580e0cd-a916-4585-915e-c78f178bb369" />
+<img width="240" height="240" alt="스크린샷 2025-08-10 오후 9 18 30" src="https://github.com/user-attachments/assets/95d0a0ff-6de6-48dc-adbc-6224d690fd0f" />
+<img width="240" height="240" alt="스크린샷 2025-08-10 오후 9 19 14" src="https://github.com/user-attachments/assets/f51e9467-6a5c-472c-a666-3d16fd7ebb67" />
 
 ### **화면 구성 및 테마**
 
