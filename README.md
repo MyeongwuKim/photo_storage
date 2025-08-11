@@ -1,4 +1,6 @@
 ## **Photo Storage**
+<img width="480" height="480" alt="스크린샷 2025-08-10 오후 5 55 24" src="https://github.com/user-attachments/assets/03720509-9520-43e6-8f20-8efb5d0397da" />
+<img width="480" height="480" alt="스크린샷 2025-08-10 오후 5 55 58 (1)" src="https://github.com/user-attachments/assets/d346dd1a-535e-4157-b4e2-a8e2f0d59196" />
 
 ## 프로젝트 개요
 
