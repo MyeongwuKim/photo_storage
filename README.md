@@ -57,12 +57,14 @@
 
 - 업로드 된 게시물을 태그,코멘트,위치 키워드로 필터링하여 검색할수 있음
   
-<img width="480u" height="480" alt="스크린샷 2025-08-10 오후 9 23 52" src="https://github.com/user-attachments/assets/46776415-d62b-4678-8c6b-0f3d14c0d719" />
+<img width="480" height="480" alt="스크린샷 2025-08-10 오후 9 23 52" src="https://github.com/user-attachments/assets/46776415-d62b-4678-8c6b-0f3d14c0d719" />
 <img width="480" height="480" alt="스크린샷 2025-08-10 오후 9 18 37" src="https://github.com/user-attachments/assets/fead9b4c-06e7-4bbf-8458-6c4be2cbf946" />
-<img width="480" height="480" alt="스크린샷 2025-08-10 오후 9 19 14" src="https://github.com/user-attachments/assets/93c16c9c-df2f-4ab6-8365-50f4f1925f93" />
-<img width="480" height="480" alt="스크린샷 2025-08-10 오후 9 18 57" src="https://github.com/user-attachments/assets/61fe1c2c-a24c-489b-9f88-a23fecff9b16" />
+<img width="240" height="480" alt="스크린샷 2025-08-10 오후 9 18 57" src="https://github.com/user-attachments/assets/8d578120-39d8-46ca-aa35-391389523771" />
+<img width="240" height="480" alt="스크린샷 2025-08-10 오후 9 20 37" src="https://github.com/user-attachments/assets/c580e0cd-a916-4585-915e-c78f178bb369" />
+<img width="240" height="480" alt="스크린샷 2025-08-10 오후 9 18 30" src="https://github.com/user-attachments/assets/95d0a0ff-6de6-48dc-adbc-6224d690fd0f" />
+<img width="240" height="480" alt="스크린샷 2025-08-10 오후 9 19 14" src="https://github.com/user-attachments/assets/f51e9467-6a5c-472c-a666-3d16fd7ebb67" />
 
-### 화면 구성 및 테마
+### **화면 구성 및 테마**
 
 - Tailwind를 통해 핸드폰과 웹 모두에서 최적화된 반응형 웹 디자인 제공
 - 다크 모드와 라이트 모드 지원으로 사용자 환경 맞춤 설정 가능
