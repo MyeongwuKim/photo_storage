@@ -8,19 +8,19 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import {
-  ArrowLeftStartOnRectangleIcon,
   ChatBubbleLeftEllipsisIcon,
   MapPinIcon,
   TagIcon,
 } from "@heroicons/react/24/solid";
-import { signOut, useSession } from "next-auth/react";
+import { signOut, useSession, signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { useUI } from "../uiProvider";
+import { MdLogin, MdLogout } from "react-icons/md";
 
 const hideFilter = ["viewer", "auth"];
 
 const TopView = () => {
-  const session = useSession();
+  const { data: session, status } = useSession();
   const { openModal } = useUI();
   const { setTheme, theme } = useTheme();
   const pathname = usePathname();
@@ -176,7 +176,13 @@ const TopView = () => {
         </div>
       </div>
       <div className="flex gap-2 items-center justify-end ">
-        <div className="h-default w-[60px] md:flex sm:hidden ti:hidden">
+        <div
+          className={` ${
+            !session
+              ? "hidden"
+              : "h-default w-[60px] md:flex sm:hidden ti:hidden"
+          }`}
+        >
           <NormalBtn
             clickEvt={() => {
               openModal("UPLOAD");
@@ -212,15 +218,20 @@ const TopView = () => {
             },
           ]}
         />
-        {session ? (
-          <ArrowLeftStartOnRectangleIcon
-            className="underline-offset-2 h-6 w-6 items-center flex cursor-pointer"
+        {!session ? (
+          <MdLogin
+            className={`underline-offset-2 h-8 w-8 items-center flex cursor-pointer`}
+            onClick={() => {
+              signIn();
+            }}
+          />
+        ) : (
+          <MdLogout
+            className={`underline-offset-2 h-8 w-8 items-center flex cursor-pointer`}
             onClick={() => {
               signOut();
             }}
           />
-        ) : (
-          ""
         )}
       </div>
     </div>

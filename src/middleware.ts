@@ -4,11 +4,21 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
   const { pathname, origin, href } = request.nextUrl;
-  const session = await getToken({ req: request, secret: process.env.SECRET });
-  if (!session)
-    return NextResponse.redirect(new URL("/auth/signin", request.url));
+  const token = await getToken({ req: request, secret: process.env.SECRET });
+  console.log(request.method);
+  if ((request.method === "POST" || request.method === "DELETE") && !token) {
+    return NextResponse.json(
+      { error: "API 접근 권한이 없습니다." },
+      { status: 401 }
+    );
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|auth/signin).*)"],
+  matcher: [
+    "/api/:path*", // API 요청도 검사
+    "/((?!_next/static|_next/image|favicon.ico|auth/signin).*)", // 나머지 페이지
+  ],
 };

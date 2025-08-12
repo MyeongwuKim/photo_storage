@@ -23,6 +23,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, usePathname, useRouter, notFound } from "next/navigation";
 import { ArrowsPointingInIcon } from "@heroicons/react/20/solid";
 import { useUI } from "../uiProvider";
+import { useSession } from "next-auth/react";
 
 type Variables = {
   fileId: string;
@@ -78,6 +79,7 @@ const fetchFileData = async (id: string, filter: string | undefined) => {
 
 const ViewerComp = () => {
   const { openModal, openToast } = useUI();
+  const { data: session, status } = useSession();
   const queryClient = useQueryClient();
   const { id, filter } = useParams<{ id: string[]; filter: string }>();
   const route = useRouter();
@@ -307,7 +309,11 @@ const ViewerComp = () => {
                         });
                         e.preventDefault();
                       }}
-                      className="md:w-10 h-auto sm:w-8 ti:w-6 flex-none absolute top-6 cursor-pointer"
+                      className={`${
+                        !session
+                          ? "hidden"
+                          : "md:w-10 h-auto sm:w-8 ti:w-6 flex-none absolute top-6 cursor-pointer"
+                      } `}
                     >
                       <svg
                         id="heartWrapper"
@@ -385,9 +391,15 @@ const ViewerComp = () => {
                     }
                   }}
                   className={`${
-                    filter == "post" || filter == "tag" ? `visible` : "hidden"
-                  }
-                    cursor-pointer w-6 h-6 hover:border-gray-300 hover:text-gray-300 text-gray-400`}
+                    !session
+                      ? "hidden"
+                      : `${
+                          filter == "post" || filter == "tag"
+                            ? `visible`
+                            : "hidden"
+                        }
+                    cursor-pointer w-6 h-6 hover:border-gray-300 hover:text-gray-300 text-gray-400`
+                  }`}
                 />
                 <ArrowsPointingOutIcon
                   onClick={() => {

@@ -64,11 +64,11 @@ export const GET = async (req: NextRequest, { params }: { params: any }) => {
 
 export const DELETE = async (req: NextRequest, { params }: { params: any }) => {
   const session = await getToken({ req, secret: process.env.SECRET });
-  if (!session)
-    return NextResponse.json({
-      ok: false,
-      error: "로그인 인증이 필요합니다.",
-    });
+  // if (!session)
+  //   return NextResponse.json({
+  //     ok: false,
+  //     error: "로그인 인증이 필요합니다.",
+  //   });
 
   const { id } = params;
 

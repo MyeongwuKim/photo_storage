@@ -12,6 +12,7 @@ import { ArrowUpTrayIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { getScrollValue, setScrollValue } from "@/hooks/useUtil";
 import { useUI } from "../uiProvider";
 import NoItemIcon from "../icon/noItem";
+import { useSession } from "next-auth/react";
 
 type PostType = Post & {
   _count: { files: number };
@@ -92,6 +93,7 @@ const InfiniteScroll = ({
   queryKey: string[];
   gcTime?: number;
 }) => {
+  const { data: session, status } = useSession();
   const route = useRouter();
   const params = useSearchParams();
   const pathname = usePathname();
@@ -294,7 +296,13 @@ const InfiniteScroll = ({
       >
         <CircleSpinner active={enableSpinnder} />
       </div>
-      <div className="fixed bottom-4 right-4 h-[60px] w-[60px] md:hidden sm:visible z-10">
+      <div
+        className={`${
+          !session
+            ? "hidden"
+            : "fixed bottom-4 right-4 h-[60px] w-[60px] md:hidden sm:visible z-10"
+        }`}
+      >
         <button
           className="w-full h-full flex justify-center items-center rounded-full  px-4 font-semibold blueBtn"
           onClick={() => openModal("UPLOAD")}
