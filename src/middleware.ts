@@ -6,7 +6,11 @@ export async function middleware(request: NextRequest) {
   const { pathname, origin, href } = request.nextUrl;
   const token = await getToken({ req: request, secret: process.env.SECRET });
   console.log(request.method);
-  if ((request.method === "POST" || request.method === "DELETE") && !token) {
+  if (
+    (request.method === "POST" || request.method === "DELETE") &&
+    !token &&
+    !pathname.startsWith("/api/auth") // auth API 예외 처리
+  ) {
     return NextResponse.json(
       { error: "API 접근 권한이 없습니다." },
       { status: 401 }
