@@ -524,7 +524,7 @@ export const ViwerBottom = ({
 
 export const FileSkeleton = () => {
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full bg-zinc-800">
       <div className="absolute w-full h-full px-16 pb-10 pt-20 flex items-center justify-center">
         <PhotoIcon className="animate-pulse h-full w-auto object-contain text-white" />
       </div>
