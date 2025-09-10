@@ -1,3 +1,5 @@
+import { DateFilterType } from "@/lib/fetcher";
+
 export const setScrollValue = (pathname: string, value: string) => {
   const key =
     pathname.replace("/", "").length <= 0 ? "post" : pathname.replace("/", "");
@@ -76,6 +78,9 @@ export const timeStamp = () => {
 };
 
 export const getThumbnailURL = (type: string, fileId: string): string => {
+  if (process.env.NEXT_PUBLIC_DEMO) {
+    return fileId;
+  }
   let url = "";
   if (type == "video")
     url = `https://customer-mgkas9o5mlq4q3on.cloudflarestream.com/${fileId}/thumbnails/thumbnail.jpg`;
@@ -86,5 +91,41 @@ export const getThumbnailURL = (type: string, fileId: string): string => {
 };
 
 export const getImage = (type: string, fileId: string): string => {
+  if (process.env.NEXT_PUBLIC_DEMO) {
+    return fileId;
+  }
   return `https://imagedelivery.net/0VaIqAONZ2vq2gejAGX7Sw/${fileId}/${type}`;
+};
+
+export const makePostQueryKey = (
+  sort: string,
+  date: DateFilterType,
+  postFilter: string
+) => {
+  return [
+    "tab",
+    postFilter,
+    {
+      sort,
+      type: date.type ?? "create", // ✅ 항상 기본값 포함
+      from: date.from ?? null,
+      to: date.to ?? null,
+    },
+  ] as const;
+};
+
+export const calcSize = (
+  originH: number,
+  originW: number,
+  contW: number,
+  contH: number
+): { width: number; height: number } => {
+  const ratioW = contW / originW;
+  const ratioH = contH / originH;
+  const ratio = Math.min(ratioW, ratioH); // ✅ 컨테이너에 딱 맞게 contain
+
+  return {
+    width: Math.round(originW * ratio),
+    height: Math.round(originH * ratio),
+  };
 };

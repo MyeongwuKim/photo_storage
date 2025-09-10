@@ -30,16 +30,15 @@ interface props {
 }
 const SearchView = ({ searchParams }: props) => {
   const { filter, s } = searchParams;
-
+  const querykey = ["", "search", { filter, s }];
   return (
     <ScrollViewWrapper>
-      <OptionView />
       <InfiniteScroll
         type="multi"
-        query={`/api/search?s=${s}&filter=${filter}`}
-        queryKey={["search", s]}
+        querykey={querykey}
         gcTime={1000}
-      ></InfiniteScroll>
+        postFilter="search"
+      />
     </ScrollViewWrapper>
   );
 };

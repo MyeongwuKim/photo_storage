@@ -24,14 +24,14 @@ export default function ErrorComponent({
       <div className="text-xl font-semibold">
         {error ? error.toString() : "예기치 못한 에러가 발생했습니다."}
       </div>
-      <div className="h-default w-[80px] mt-4">
-        <NormalBtn
-          clickEvt={() => {
-            resetErrorBoundary();
-          }}
-          entity={<span>재시도</span>}
-        />
-      </div>
+
+      <NormalBtn
+        className="h-default w-[80px] mt-4 blueBtn"
+        clickEvt={() => {
+          resetErrorBoundary();
+        }}
+        entity={<span>재시도</span>}
+      />
     </div>
   );
 }

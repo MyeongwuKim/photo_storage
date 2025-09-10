@@ -1,41 +1,27 @@
-import InfiniteScroll from "@/components/ui/infiniteScroll";
-import OptionView from "@/components/ui/optionView";
-import ScrollViewWrapper from "@/components/ui/scrollViewWrapper";
-import getQueryClient from "@/hooks/useQueryClient";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import InfiniteScroll from '@/components/ui/infiniteScroll';
+import OptionView from '@/components/ui/optionView';
+import ScrollViewWrapper from '@/components/ui/scrollViewWrapper';
+import { makePostQueryKey } from '@/hooks/useUtil';
+import { DateFilterType, fetchPostsItem } from '@/lib/fetcher';
 
-const getData = async (pageParam: number) => {
-  const result = await (
-    await fetch(
-      `${process.env.NEXTAUTH_URL}/api/post?filter=tag&offset=${pageParam}`,
-      { cache: "no-store" }
-    )
-  ).json();
-  return result;
-};
+interface Props {
+   searchParams: { sort: string; type: string; to: string; from: string };
+}
 
-export default async function Tag() {
-  const queryKey = ["tab", "tag"];
-  const queryClient = getQueryClient();
-  await queryClient.prefetchInfiniteQuery({
-    queryKey,
-    queryFn: ({ pageParam }) => getData(pageParam),
-    initialPageParam: 0,
-    getNextPageParam: (lastPage, pages) => {
-      return pages.length;
-    },
-    pages: 0,
-  });
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+export default async function Tag({ searchParams }: Props) {
+   const sort = searchParams.sort ?? 'new';
+   const dateFilterData: DateFilterType = {
+      type: (searchParams.type as 'create' | 'shoot') ?? 'create',
+      from: searchParams.from ?? null,
+      to: searchParams.to ?? null,
+   };
+
+   const queryKey = makePostQueryKey(sort, dateFilterData, 'tag');
+
+   return (
       <ScrollViewWrapper>
-        <OptionView />
-        <InfiniteScroll
-          queryKey={queryKey}
-          query={`${process.env.NEXTAUTH_URL}/api/post?filter=tag`}
-          type="multi"
-        />
+         <OptionView />
+         <InfiniteScroll postFilter="tag" type="multi" querykey={queryKey} />
       </ScrollViewWrapper>
-    </HydrationBoundary>
-  );
+   );
 }

@@ -192,7 +192,7 @@ export const MoreView = ({
         >
           {modalState.fileItem.map((v, i) => {
             return (
-              <div key={v.url} id={`moreview_item${i}`}>
+              <div key={v.url + `-${i}`} id={`moreview_item${i}`}>
                 <MoreItem
                   itemAttr={{
                     index: i,

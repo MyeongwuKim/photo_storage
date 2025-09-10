@@ -1,40 +1,30 @@
-import InfiniteScroll from "@/components/ui/infiniteScroll";
-import OptionView from "@/components/ui/optionView";
-import ScrollViewWrapper from "@/components/ui/scrollViewWrapper";
-import getQueryClient from "@/hooks/useQueryClient";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-const getData = async (pageParam: number) => {
-  const result = await (
-    await fetch(
-      `${process.env.NEXTAUTH_URL}/api/post?filter=photo&offset=${pageParam}`,
-      { cache: "no-store" }
-    )
-  ).json();
-  return result;
-};
+import InfiniteScroll from '@/components/ui/infiniteScroll';
+import OptionView from '@/components/ui/optionView';
+import ScrollViewWrapper from '@/components/ui/scrollViewWrapper';
+import { makePostQueryKey } from '@/hooks/useUtil';
+import { DateFilterType } from '@/lib/fetcher';
 
-export default async function Photo() {
-  const queryKey = ["tab", "photo"];
-  const queryClient = getQueryClient();
-  await queryClient.prefetchInfiniteQuery({
-    queryKey,
-    queryFn: ({ pageParam }) => getData(pageParam),
-    initialPageParam: 0,
-    getNextPageParam: (lastPage, pages) => {
-      return pages.length;
-    },
-    pages: 0,
-  });
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+interface Props {
+   searchParams: { sort: string; type: string; to: string; from: string };
+}
+
+export default async function Photo({ searchParams }: Props) {
+   const sort = searchParams.sort ?? 'new';
+   const dateFilterData: DateFilterType = {
+      type: (searchParams.type as 'create' | 'shoot') ?? 'create',
+      from: searchParams.from ?? null,
+      to: searchParams.to ?? null,
+   };
+   const queryKey = makePostQueryKey(
+      searchParams.sort ?? 'new',
+      dateFilterData,
+      'photo'
+   );
+
+   return (
       <ScrollViewWrapper>
-        <OptionView />
-        <InfiniteScroll
-          queryKey={queryKey}
-          type="single"
-          query={`${process.env.NEXTAUTH_URL}/api/post?filter=photo`}
-        />
+         <OptionView />
+         <InfiniteScroll postFilter="photo" type="single" querykey={queryKey} />
       </ScrollViewWrapper>
-    </HydrationBoundary>
-  );
+   );
 }

@@ -37,15 +37,15 @@ const NotFound = () => {
       <div className="text-2xl font-semibold mt-4">
         이런..페이지를 찾을수 없습니다.
       </div>
-      <div className="w-24 h-12 mt-4">
-        <NormalBtn
-          type="button"
-          clickEvt={() => {
-            route.replace("/");
-          }}
-          entity={<span>돌아가기</span>}
-        />
-      </div>
+
+      <NormalBtn
+        className="w-24 h-12 mt-4 blueBtn"
+        type="button"
+        clickEvt={() => {
+          route.replace("/");
+        }}
+        entity={<span>돌아가기</span>}
+      />
     </div>
   );
 };

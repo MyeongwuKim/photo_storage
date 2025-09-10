@@ -4,14 +4,20 @@ interface NormalBtnProps {
   entity: any;
   clickEvt: () => void;
   type?: "submit" | "reset" | "button" | undefined;
+  className?: string;
 }
 
-const NormalBtn = ({ entity, clickEvt, type = "button" }: NormalBtnProps) => {
+const NormalBtn = ({
+  entity,
+  clickEvt,
+  type = "button",
+  className = "",
+}: NormalBtnProps) => {
   return (
     <button
       type={type}
       onClick={clickEvt}
-      className="w-full h-full flex justify-center items-center rounded-md  px-4 font-semibold blueBtn"
+      className={`flex justify-center items-center rounded-md  px-4 font-semibold ${className} `}
     >
       {entity}
     </button>

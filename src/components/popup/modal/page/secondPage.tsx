@@ -32,8 +32,8 @@ const SecondPage = () => {
   const { state, dispatch } = useUploadModal();
   const { openModal } = useUI();
   useEffect(() => {
-    if (state.fileItem.length <= 0) {
-      reset({ comment: "", tag: "" });
+    if (state.info.mode == "create") {
+      dispatch({ type: "CLEAR_INFO" });
     }
   }, [state.fileItem]);
   const updateInfo = useCallback((props: Partial<InfoType>) => {
@@ -89,6 +89,7 @@ const SecondPage = () => {
         </div>
         <div className="w-full h-[64px]">
           <TextBox
+            defaultValue={state.info.comment}
             register={{
               ...register("comment", {
                 onChange: (event) => {

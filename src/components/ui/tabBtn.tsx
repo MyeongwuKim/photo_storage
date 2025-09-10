@@ -25,9 +25,7 @@ const TabBtn = ({
         if (clickEvt) clickEvt();
       }}
       className={`${
-        isDisabled
-          ? "dark:border-darkText-2 border-lightText-2 cursor-none border-b-2"
-          : ""
+        isDisabled ? "cursor-none" : ""
       } me-2 inline-block pb-[6px]`}
     >
       <button

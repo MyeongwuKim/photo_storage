@@ -41,12 +41,14 @@ export default function Dropdown({
     >
       <div>
         <Menu.Button
-          className={`inline-flex w-full justify-center  gap-x-1.5 rounded-md ${itemSize.textSize}
-          px-3 ring-inset items-center flex-1  ${itemSize.height} ${itemSize.width}`}
+          className={`inline-flex w-full justify-center items-center 
+    rounded-md px-3 ${itemSize.height} ${itemSize.width}`}
         >
-          {itemAttr[selectedIdx].entity}
+          <span className="w-12 h-12 flex items-center justify-center">
+            {itemAttr[selectedIdx].entity}
+          </span>
           <ChevronDownIcon
-            className="w-4 h-4 flex-none text-gray-400 "
+            className="w-4 h-4 ml-1 text-gray-400"
             aria-hidden="true"
           />
         </Menu.Button>

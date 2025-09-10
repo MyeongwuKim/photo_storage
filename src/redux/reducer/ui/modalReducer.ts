@@ -3,10 +3,10 @@ import { ReactNode } from "react";
 
 export type ModalType = "UPLOAD" | "ALERT" | "MAP" | "DATEPICKER";
 
-type ModalPropsMap = {
-  UPLOAD: undefined;
-  DATEPICKER: undefined;
-  MAP: { date: string | null };
+export type ModalPropsMap = {
+  UPLOAD: { postId: string | undefined | null };
+  DATEPICKER: { date: string | null };
+  MAP: undefined;
   ALERT: { msg: string; btnMsg: string[]; title?: string };
 };
 

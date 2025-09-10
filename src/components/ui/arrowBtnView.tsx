@@ -14,17 +14,6 @@ import { File, Tag } from "@prisma/client";
 import BoxItem from "./boxItem";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-type PostType = {
-  files: File[];
-  id: string;
-  createdAt: Date;
-  _count: { files: number };
-};
-
-type TagType = Tag & {
-  posts: PostType[];
-};
-
 interface ResponseProps {
   ok: boolean;
   data: TagType[];
@@ -38,7 +27,6 @@ const getData = async (tag: string, pageParam: any): Promise<ResponseProps> => {
 
 /**클라이언트 단으로 분리한 Tag 페이지의 아이템*/
 const ArrowBtnView = ({ tagData }: { tagData: TagType }) => {
-  const [posts, setPosts] = useState<PostType[]>(tagData.posts);
   const [isScroll, setIsScoll] = useState<boolean>(false);
   const [vieweEnable, setViewEnable] = useState<boolean>(false);
   const [dirBtnEnable, setDirBtnEnable] = useState<{
@@ -105,19 +93,8 @@ const ArrowBtnView = ({ tagData }: { tagData: TagType }) => {
   }, []);
 
   useEffect(() => {
-    setPosts(() => {
-      let arr: PostType[] = [];
-      for (let i = 0; i < data.pages.length; i++) {
-        let postData = data.pages[i].data[0].posts;
-        if (postData.length > 0) arr = arr.concat(...postData) as PostType[];
-      }
-      return arr;
-    });
-  }, [data]);
-
-  useEffect(() => {
     updateDirBtn();
-  }, [posts]);
+  }, [tagData.posts]);
 
   useEffect(() => {
     if (vieweEnable) {
@@ -138,7 +115,7 @@ const ArrowBtnView = ({ tagData }: { tagData: TagType }) => {
         id={tagData.body + "_tagScrollArea"}
         className="flex gap-2 flex-row h- w-full overflow-auto overflow-x-hidden duration-300 items-center"
       >
-        {posts?.map((v, i) => {
+        {tagData.posts?.map((v, i) => {
           return (
             <div
               key={i}
@@ -146,15 +123,9 @@ const ArrowBtnView = ({ tagData }: { tagData: TagType }) => {
               aspect-square flex-none "
             >
               <BoxItem
-                key={i}
-                id={v.id}
-                multi={{
-                  date: v.createdAt,
-                  files: v.files,
-                  tagId: tagData.id,
-                  tagBody: tagData.body,
-                  filesCount: v._count.files,
-                }}
+                type={"multi"}
+                data={{ ...v, tags: [] }}
+                tagname={tagData.body}
               />
             </div>
           );

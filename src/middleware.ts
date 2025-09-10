@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function middleware(request: NextRequest) {
   const { pathname, origin, href } = request.nextUrl;
   const token = await getToken({ req: request, secret: process.env.SECRET });
-  console.log(request.method);
+
   if (
     (request.method === "POST" || request.method === "DELETE") &&
     !token &&

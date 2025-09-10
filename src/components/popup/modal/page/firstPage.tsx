@@ -12,7 +12,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { Carousel, Label, CustomFlowbiteTheme } from "flowbite-react";
 
-import { getFormatTranslateX } from "@/hooks/useUtil";
+import { calcSize, getFormatTranslateX } from "@/hooks/useUtil";
 import { MoreContainer } from "../ui/moreContainer";
 import { useUploadModal } from "../uploadModal";
 
@@ -44,11 +44,6 @@ const customTheme: CustomFlowbiteTheme["carousel"] = {
     base: "flex h-full snap-mandatory overflow-y-hidden overflow-x-hidden scroll-smooth rounded-lg",
     snap: "snap-x",
   },
-};
-
-type FileMeta = {
-  file: File;
-  type: string;
 };
 
 const FirstPage = ({
@@ -85,25 +80,6 @@ const FirstPage = ({
       document.getElementById("firstpageContainer")!.offsetHeight;
     const contWidth =
       document.getElementById("firstpageContainer")!.offsetWidth;
-    const calcSize = (
-      originH: number,
-      originW: number
-    ): { width: number; height: number } => {
-      let ratio = 0,
-        width = 0,
-        height = 0;
-
-      if (originH <= originW) {
-        ratio = contHeight / (originH / 100);
-        width = Math.ceil((originW / 100) * ratio);
-        height = contHeight;
-      } else {
-        ratio = contWidth / (originW / 100);
-        height = Math.ceil((originH / 100) * ratio);
-        width = contWidth;
-      }
-      return { width, height };
-    };
 
     for (let i = 0; i < _files.length; i++) {
       const file = _files[i];
@@ -125,16 +101,22 @@ const FirstPage = ({
           const imgEle = img as HTMLImageElement;
           const { height, width } = calcSize(
             imgEle.naturalHeight,
-            imgEle.naturalWidth
+            imgEle.naturalWidth,
+            contWidth,
+            contHeight
           );
           dispatch({
             type: "ADD_FILES",
             payload: {
+              fileId: "",
+              thumbnail: null,
               origin: file,
               type,
               url,
               width,
               height,
+              originWidth: imgEle.naturalWidth,
+              originHeight: imgEle.naturalHeight,
             },
           });
         };
@@ -147,7 +129,9 @@ const FirstPage = ({
           const videoEle = video as HTMLVideoElement;
           const { height, width } = calcSize(
             videoEle.videoHeight,
-            videoEle.videoWidth
+            videoEle.videoWidth,
+            contWidth,
+            contHeight
           );
           canvas.width = width;
           canvas.height = height;
@@ -168,8 +152,11 @@ const FirstPage = ({
                   url,
                   width,
                   height,
+                  fileId: "",
                   thumbnail: thumb,
                   duration: videoEle.duration,
+                  originWidth: videoEle.videoWidth,
+                  originHeight: videoEle.videoHeight,
                 },
               });
             }, "image/jpg");
@@ -186,9 +173,9 @@ const FirstPage = ({
         ","
       );
       const x =
-        mousePos.x == e.clientX ? 0 : e.clientX - mousePos.x > 0 ? -5 : 5;
+        mousePos.x === e.clientX ? 0 : e.clientX - mousePos.x > 0 ? -5 : 5;
       const y =
-        mousePos.y == e.clientY ? 0 : e.clientY - mousePos.y > 0 ? -5 : 5;
+        mousePos.y === e.clientY ? 0 : e.clientY - mousePos.y > 0 ? -5 : 5;
 
       const changePos = {
         x: Number(transform[0]) + x,
@@ -198,17 +185,22 @@ const FirstPage = ({
       mousePos = { x: e.clientX, y: e.clientY };
     }
   };
+
   const mouseUpEvt = () => {
     const slideItem = document.getElementById(`item_${targetIndex!}`)
       ?.children[0] as HTMLElement;
-    // slideItem.style.width = `${files[targetIndex].width + "px"}`;
-    // slideItem.style.height = `${files[targetIndex].height + "px"}`;
-    slideItem.style.width = "100%";
-    slideItem.style.height = "100%";
-    slideItem.style.transform = `translate(${0}px,${0}px)`;
+
+    slideItem.style.transition = "transform 0.3s ease"; // ✅ 부드럽게 원위치
+    slideItem.style.transform = `translate(0px,0px)`;
+
     isMouseClick = false;
     document.removeEventListener("mousemove", mouseMoveEvt);
     document.removeEventListener("mouseup", mouseUpEvt);
+
+    // transition 해제 (다음 드래그 대비)
+    setTimeout(() => {
+      slideItem.style.transition = "";
+    }, 300);
   };
   useEffect(() => {
     if (flowNumber == 1 && videoEleRef.current[slideNumber]) {
@@ -365,13 +357,7 @@ const FirstPage = ({
                     <div
                       className="flex-none"
                       style={{
-                        width: `${
-                          v.width! <
-                          document.getElementById("firstpageContainer")!
-                            .offsetWidth
-                            ? `${v.width}px`
-                            : "100%"
-                        }`,
+                        width: v.width,
                         height: v.height,
                       }}
                     >
@@ -384,11 +370,14 @@ const FirstPage = ({
                           const ele = event.target as HTMLVideoElement;
                           const key = i.toString();
                           videoEleRef.current[key] = ele;
-                          if (i == 0) ele.play();
+                          if (i == 0) ele.play(); // 첫 번째 비디오만 자동재생
                         }}
                         src={v.url}
                         width={v.width}
                         height={v.height}
+                        muted // ✅ 무음
+                        loop // ✅ 반복
+                        playsInline // ✅ 모바일 인라인 재생
                       />
                     </div>
                   )}
@@ -403,9 +392,6 @@ const FirstPage = ({
                         const slideItem = document.getElementById(
                           `item_${targetIndex!}`
                         )?.children[0] as HTMLElement;
-
-                        slideItem.style.width = `${state.fileItem[i].width}px`;
-                        slideItem.style.height = `${state.fileItem[i].height}px`;
 
                         document.addEventListener("mousemove", mouseMoveEvt);
                         document.addEventListener("mouseup", mouseUpEvt);

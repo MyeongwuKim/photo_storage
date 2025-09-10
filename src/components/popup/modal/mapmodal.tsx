@@ -36,15 +36,15 @@ const MapModal = ({ onClose }: MapModalProps) => {
             setPlaceAddress={setPlaceAddress}
             placeAddress={placeAddress}
           />
-          <div className="w-[64px]">
-            <NormalBtn
-              entity={<CheckIcon className="w-5 h-5" />}
-              clickEvt={() => {
-                if (!placeAddress) return;
-                onClose({ location: selectedLocation, placeAddress });
-              }}
-            />
-          </div>
+
+          <NormalBtn
+            className="w-[64px] rounded-lg border  dark:!text-darkText-2  border-gray-300 dark:border-gray-600 dark:bg-gray-800"
+            entity={<CheckIcon className="w-5 h-5" />}
+            clickEvt={() => {
+              if (!placeAddress) return;
+              onClose({ location: selectedLocation, placeAddress });
+            }}
+          />
         </div>
         <div className="w-full h-[460px] relative mt-2">
           <GMap location={selectedLocation} setPlaceAddress={setPlaceAddress} />

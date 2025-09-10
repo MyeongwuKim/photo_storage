@@ -4,235 +4,151 @@ import Dropdown from "../ui/dropdown";
 import { MoonIcon, SunIcon, ArrowUpTrayIcon } from "@heroicons/react/20/solid";
 import NormalBtn from "../ui/normalBtn";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import {
   ChatBubbleLeftEllipsisIcon,
   MapPinIcon,
   TagIcon,
 } from "@heroicons/react/24/solid";
-import { signOut, useSession, signIn } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { useUI } from "../uiProvider";
-import { MdLogin, MdLogout } from "react-icons/md";
+import { Button } from "flowbite-react";
+import { ToggleButton } from "../ui/toggleButton";
+import TextInput from "../ui/textInput";
 
 const hideFilter = ["viewer", "auth"];
 
 const TopView = () => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const { openModal } = useUI();
-  const { setTheme, theme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const pathname = usePathname();
   const router = useRouter();
   const params = useSearchParams();
+
+  // ✅ RHF
   const {
     register,
     setError,
     clearErrors,
     formState: { errors },
-  } = useForm();
+    watch,
+    setValue,
+  } = useForm({
+    defaultValues: {
+      searchInput: params.get("s") ?? "",
+    },
+  });
 
-  const [placeHolderStr, setPlaceHolderStr] =
-    useState<string>("태그를 입력해주세요.");
-  const [inputValue, setInputValue] = useState<string | null>(
-    params.get("s") ? params.get("s") : ""
-  );
-  const [initFilterData, setInitFilterData] = useState<string | null>(
-    params.get("filter") ? params.get("filter") : "tag"
+  // ✅ filter 상태를 URL 대신 state 로 관리
+  const [filter, setFilter] = useState<"tag" | "comment" | "place">(
+    (params.get("filter") as any) ?? "tag"
   );
 
-  useEffect(() => {
-    setInputValue(params.get("s"));
-  }, [params]);
+  // ✅ placeholder 계산
+  const inputPlaceHolder = useMemo(() => {
+    switch (filter) {
+      case "place":
+        return "장소를 입력해주세요.";
+      case "comment":
+        return "코멘트를 입력해주세요.";
+      default:
+        return "태그를 입력해주세요.";
+    }
+  }, [filter]);
+
+  // ✅ 현재 입력값
+  const inputValue = watch("searchInput");
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputValue || inputValue.length <= 0) {
+      setError("searchInput", {
+        message: "검색어는 한글자 이상이여야 합니다.",
+      });
+      return;
+    }
+    // ✅ 이 시점에서만 router.push
+    router.push(`/search/?s=${inputValue}&filter=${filter}`);
+  };
 
   return (
     <div
-      className={`{
-          ${
-            hideFilter.some((page) => {
-              return pathname.includes(page);
-            })
-              ? "block"
-              : "block"
-          }
-        flex justify-between items-center px-2 
-    h-[64px] border-b-[1px] dark:border-darkBorder-1 border-lightBorder-1`}
+      className={`${
+        hideFilter.some((page) => pathname.includes(page)) ? "hidden" : "flex"
+      } justify-between items-center px-2 max-w-[768px] mx-auto h-[64px]`}
     >
+      {/* ✅ 테마 토글 */}
+      <ToggleButton
+        className="w-[25px] h-[25px]"
+        checkIcon={<MoonIcon className="w-[2rem] h-[2rem]" />}
+        unCheckIcon={<SunIcon className="w-[2rem] h-[2rem]" />}
+        clickCallback={(isChecked) => {
+          setTheme(isChecked ? "light" : "dark");
+        }}
+        isCheck={resolvedTheme === "light"}
+      />
+
+      {/* ✅ 검색 영역 */}
       <div className="flex flex-1 gap-2 items-center pr-2">
         <Dropdown
-          initStr={initFilterData}
-          itemSize={{
-            height: "h-[40px]",
-            width: "sm:w-[60px] ti:w-[60px] md:w-[90px]",
-          }}
+          initStr={filter}
+          itemSize={{ height: "h-[40px]", width: "w-[80px]" }}
           callback={(selectData) => {
-            let str = "";
-            switch (selectData) {
-              case "tag":
-                str = "태그";
-                break;
-              case "place":
-                str = "장소";
-                break;
-              case "comment":
-                str = "코멘트";
-                break;
-            }
-            setPlaceHolderStr(`${str}를 입력해주세요.`);
-            setInitFilterData(selectData);
-            setInputValue("");
+            // ✅ 라우터 이동 X → state 만 변경
+            setFilter(selectData as "tag" | "comment" | "place");
           }}
           itemAttr={[
-            {
-              entity: (
-                <TagIcon
-                  className="md:w-5 md:h-5 sm:w-4 sm:h-4 ti:w-4 ti:h-4"
-                  title="tag"
-                />
-              ),
-            },
+            { entity: <TagIcon className="w-5 h-5" title="tag" /> },
             {
               entity: (
                 <ChatBubbleLeftEllipsisIcon
-                  className="md:w-5 md:h-5 sm:w-4 sm:h-4 ti:w-4 ti:h-4"
+                  className="w-5 h-5"
                   title="comment"
                 />
               ),
             },
-            {
-              entity: (
-                <MapPinIcon
-                  className="md:w-5 md:h-5 sm:w-4 sm:h-4 ti:w-4 ti:h-4"
-                  title="place"
-                />
-              ),
-            },
+            { entity: <MapPinIcon className="w-5 h-5" title="place" /> },
           ]}
         />
-        <div className="w-full">
-          <div className="h-default w-full relative">
-            <form
-              className="w-full h-full"
-              onSubmit={(e) => {
-                const s = inputValue;
-                if (!s || s.length <= 0) {
-                  setError("searchInput", {
-                    message: "검색어는 한글자 이상이여야 합니다.",
-                  });
-                  e.preventDefault();
-                  return;
-                }
 
-                const filter = initFilterData;
-                router.push(`/search/?s=${s}&filter=${filter}`);
-
-                e.preventDefault();
-              }}
-            >
-              <input
-                {...register("searchInput", {
-                  required: {
-                    value: true,
-                    message: "내용을 입력해주세요.",
-                  },
-                })}
-                onChange={(e: any) => {
-                  if (errors && errors?.searchInput?.message) {
-                    clearErrors();
-                  }
-                  setInputValue(e.target.value);
-                }}
-                autoComplete="off"
-                id="searchBarInput"
-                className={`w-full md:text-lg sm:text-sm ti:text-sm
-         h-full px-3 pr-10 rounded-lg focus:outline-none hover:!bg-transparent ${
-           errors && errors?.searchInput?.message
-             ? "animate-shake animate-infinite animate-duration-1000 animate-ease-in ring-2 ring-red-600 placeholder-red-600"
-             : "dark:defaultBtnDark defaultBtnLight"
-         }`}
-                name="searchValue"
-                value={inputValue ? inputValue : ""}
-                placeholder={
-                  errors && errors?.searchInput?.message
-                    ? (errors?.searchInput?.message as string)
-                    : placeHolderStr
-                }
-              />
-              <button
-                type="submit"
-                className="justify-center absolute right-0 top-2 mr-4"
-              >
-                <MagnifyingGlassIcon
-                  className={`w-5 h-5  ${
-                    errors && errors?.searchInput?.message
-                      ? "animate-shake animate-infinite animate-duration-1000 animate-ease-in"
-                      : ""
-                  }  `}
-                />
-              </button>
-            </form>
-          </div>
-        </div>
+        <form className="w-full h-full relative" onSubmit={onSubmit}>
+          <TextInput
+            className="h-[35px]"
+            name="searchInput"
+            value={inputValue}
+            placeholder={errors?.searchInput?.message ?? inputPlaceHolder}
+            id="searchBarInput"
+            autoComplete="off"
+            type="text"
+            register={register}
+            errors={errors}
+            clearErrors={clearErrors}
+            setValue={(v) => setValue("searchInput", v)}
+          />
+        </form>
       </div>
-      <div className="flex gap-2 items-center justify-end ">
-        <div
-          className={` ${
-            !session
-              ? "hidden"
-              : "h-default w-[60px] md:flex sm:hidden ti:hidden"
-          }`}
-        >
+
+      {/* ✅ 버튼 영역 */}
+      <div className="flex gap-2 items-center justify-end">
+        {session && (
           <NormalBtn
-            clickEvt={() => {
-              openModal("UPLOAD");
-            }}
+            clickEvt={() => openModal("UPLOAD")}
+            className="bg-blue-500 text-white hover:bg-blue-700 font-semibold h-[35px] w-[60px] md:flex sm:hidden ti:hidden"
             entity={<ArrowUpTrayIcon className="w-5 h-5" />}
           />
-        </div>
-        <Dropdown
-          itemSize={{
-            height: "h-[40px]",
-            width: "md:w-[60px] sm:w-[60px] ti:w-[60px]",
-          }}
-          initStr={theme == "null" ? "light" : theme}
-          callback={(selectData) => {
-            setTheme(selectData);
-          }}
-          itemAttr={[
-            {
-              entity: (
-                <MoonIcon
-                  className="md:w-5 md:h-5 sm:w-4 sm:h-4 ti:w-4 ti:h-4"
-                  title="dark"
-                />
-              ),
-            },
-            {
-              entity: (
-                <SunIcon
-                  className="md:w-5 md:h-5 sm:w-4 sm:h-4 ti:w-4 ti:h-4"
-                  title="light"
-                />
-              ),
-            },
-          ]}
-        />
-        {!session ? (
-          <MdLogin
-            className={`underline-offset-2 h-8 w-8 items-center flex cursor-pointer`}
-            onClick={() => {
-              signIn();
-            }}
-          />
-        ) : (
-          <MdLogout
-            className={`underline-offset-2 h-8 w-8 items-center flex cursor-pointer`}
-            onClick={() => {
-              signOut();
-            }}
-          />
         )}
+
+        <Button
+          onClick={() => {
+            session ? signOut() : signIn();
+          }}
+          color="light"
+        >
+          {session ? "로그아웃" : "로그인"}
+        </Button>
       </div>
     </div>
   );
