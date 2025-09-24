@@ -29,8 +29,11 @@ Next.js와 React를 공부할 겸 사이드 프로젝트를 시작하게 되었�
 
 ## 💡 What I Learned
 Next.js 13에서 14로 넘어오면서 **getStaticProps/getServerSideProps/getStaticPaths 대신 컴포넌트 안에서 직접 fetch할 수 있는 구조**가 인상적이었고, 결과적으로 **코드가 더 간결하고 직관적**이라는 점을 느꼈습니다.
+
 이전 프로젝트에서는 SWR을 사용했지만 이번에는 **React Query**를 도입했습니다. SWR은 직관적이고 가벼워서 간단한 장점이 있었지만 React Query는 **Mutation, 에러 처리, 다양한 캐싱옵션, 낙관적 업데이트, 디버깅에 적합한 DevTools등** 개발자가 활용할 수 있는 기능이 훨씬 풍부했습니다**.** 덕분에 서버 상태 관리가 SWR보다 훨씬 세밀하고 안정적으로 느껴졌습니다.
+
 CSS 측면에서는 Tailwind로 반응형 UI를 구현하면서 단순히 클래스를 붙이는 수준을 넘어 **화면 크기에 따라 자연스럽게 변하는 레이아웃 설계**를 경험했습니다.
+
 Redux로 전역 UI(Loading, Modal, Alert)를 관리하며 **props drilling을 줄이고 구조를 단순화**하는 방법을 익혔습니다. `useContext`와 `useReducer`를 함께 활용해 **코드 가독성과 유지보수성**을 높일 수 있었습니다.
 
 ---
